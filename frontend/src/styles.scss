@@ -1,0 +1,16 @@
+.content-height {
+    position: relative;
+    min-height: calc(100vh - (4.625rem + 4rem));
+    top: 4.625rem;
+    padding-bottom: 4.625rem;
+}
+
+.card-list-overflow {
+    max-height: 32rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.text-spacing-icon {
+    padding-left: 0.25rem;
+}

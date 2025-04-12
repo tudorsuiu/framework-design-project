@@ -1,0 +1,294 @@
+<app-edit-reparation-modal
+    [reparation]="reparationToBeEdited"></app-edit-reparation-modal>
+<app-delete-confirmation-modal
+    (confirmDelete)="
+        onDeleteReparationConfirmed()
+    "></app-delete-confirmation-modal>
+<app-header></app-header>
+<div
+    class="container-fluid content-height d-flex flex-direction-row justify-content-center align-items-center overflow-hidden"
+    *ngIf="authenticationService.loggedUser$ | async as loggedUser">
+    <div class="row d-flex flex-row justify-content-center">
+        <div class="col-md-6 col-12">
+            <div
+                class="d-flex flex-column justify-content-center align-items-center">
+                <i
+                    class="bi bi-calendar-plus fs-1 text-primary text-center"></i>
+                <span class="fs-2 fw-bold text-center">Create appointment</span>
+                <span class="fs-4 mb-4 text-secondary text-center"
+                    >Please fill in all the sections below</span
+                >
+                <form
+                    #createAppointmentForm="ngForm"
+                    (ngSubmit)="
+                        onCreateAppointment(); createAppointmentForm.resetForm()
+                    ">
+                    <div class="mb-3">
+                        <label for="carSelect" class="form-label"
+                            >🚗 Select your car</label
+                        >
+                        <select
+                            class="form-select"
+                            id="carSelect"
+                            aria-label="Select your car"
+                            name="carId"
+                            [(ngModel)]="carIdFormValue"
+                            #carSelect="ngModel"
+                            required>
+                            <option [value]="null" selected>
+                                Select your car
+                            </option>
+                            <option
+                                *ngFor="let car of loggedUser?.cars"
+                                [value]="car.id">
+                                {{ car.licensePlate }} - {{ car.brand }}
+                                {{ car.model }}
+                            </option>
+                        </select>
+                        <div *ngIf="carSelect.touched" class="text-danger">
+                            <small *ngIf="carSelect.errors?.['required']">
+                                Please select a car.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="mechanicSelect" class="form-label"
+                            >🧑‍🔧 Select a mechanic</label
+                        >
+                        <select
+                            class="form-select"
+                            id="mechanicSelect"
+                            aria-label="Select a mechanic"
+                            name="mechanicId"
+                            [(ngModel)]="mechanicIdValue"
+                            #mechanicSelect="ngModel"
+                            required>
+                            <option [value]="null" selected>
+                                Select a mechanic
+                            </option>
+                            <option
+                                *ngFor="let mechanic of userService.mechanics"
+                                [value]="mechanic.id">
+                                {{ mechanic.firstName }} {{ mechanic.lastName }}
+                            </option>
+                        </select>
+                        <div *ngIf="mechanicSelect.touched" class="text-danger">
+                            <small *ngIf="mechanicSelect.errors?.['required']">
+                                Please select a mechanic.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reparationTypeSelect" class="form-label"
+                            >🛠️ Select the type of reparation</label
+                        >
+                        <select
+                            class="form-select"
+                            id="reparationTypeSelect"
+                            aria-label="Select the type of reparation"
+                            name="reparationType"
+                            [(ngModel)]="reparationTypeValue"
+                            #reparationTypeSelect="ngModel"
+                            required>
+                            <option [value]="null" selected>
+                                Select the type of reparation
+                            </option>
+                            <option
+                                *ngFor="let reparationType of reparationTypes"
+                                [value]="reparationType">
+                                {{ reparationType }}
+                            </option>
+                        </select>
+                        <div
+                            *ngIf="reparationTypeSelect.touched"
+                            class="text-danger">
+                            <small
+                                *ngIf="reparationTypeSelect.errors?.['required']">
+                                Please select a reparation type.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="appointmentDate" class="form-label"
+                            >📅 Appointment Date:</label
+                        >
+                        <input
+                            type="date"
+                            class="form-control"
+                            id="appointmentDate"
+                            name="appointmentDate"
+                            [(ngModel)]="dateValue"
+                            [min]="minDate"
+                            #appointmentDate="ngModel"
+                            required />
+                        <div
+                            *ngIf="appointmentDate.touched"
+                            class="text-danger">
+                            <small *ngIf="appointmentDate.errors?.['required']">
+                                Please select a date for your appointment.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reparationDescription" class="form-label"
+                            >Reparation Description:</label
+                        >
+                        <textarea
+                            class="form-control"
+                            id="reparationDescription"
+                            name="reparationDescription"
+                            [(ngModel)]="descriptionValue"
+                            #reparationDescription="ngModel"
+                            rows="5"
+                            maxlength="255"
+                            placeholder="Describe the reparation details here..."
+                            required></textarea>
+                        <div
+                            *ngIf="reparationDescription.touched"
+                            class="text-danger">
+                            <small
+                                *ngIf="reparationDescription.errors?.['required']">
+                                Please explain your problem.
+                            </small>
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100"
+                        [disabled]="!createAppointmentForm.valid">
+                        Create
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <div
+                class="d-flex flex-column justify-content-center align-items-center overflow-auto">
+                <i
+                    class="bi bi-calendar-event fs-1 text-primary text-center"></i>
+                <span class="fs-2 fw-bold text-center">Appointments</span>
+                <span class="fs-4 mb-4 text-secondary text-center"
+                    >Review your scheduled visits</span
+                >
+                <div class="card-list card-list-overflow">
+                    <div
+                        *ngIf="
+                            loggedUser?.reparations?.length === 0;
+                            else appointmentList
+                        ">
+                        <p class="text-muted text-center">
+                            You have no appointments created!
+                        </p>
+                    </div>
+                    <ng-template #appointmentList>
+                        <div
+                            *ngFor="
+                                let reparation of reparationsByStatusAndDate()
+                            ">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        {{ reparation.type }}
+                                    </h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        <span
+                                            *ngIf="reparation.status === 'New'"
+                                            class="badge rounded-pill text-bg-primary"
+                                            >New</span
+                                        >
+
+                                        <span
+                                            *ngIf="
+                                                reparation.status ===
+                                                'In Progress'
+                                            "
+                                            class="badge rounded-pill text-bg-warning"
+                                            >In Progress</span
+                                        >
+
+                                        <span
+                                            *ngIf="reparation.status === 'Done'"
+                                            class="badge rounded-pill text-bg-success"
+                                            >Done</span
+                                        >
+
+                                        <span
+                                            *ngIf="
+                                                reparation.status ===
+                                                'Awaiting Payment'
+                                            "
+                                            class="badge rounded-pill text-bg-secondary"
+                                            >Awaiting Payment</span
+                                        >
+
+                                        {{
+                                            reparation.date
+                                                | date : 'mediumDate'
+                                        }}
+                                    </h6>
+                                    <h6 class="mb-0">
+                                        Car -
+                                        {{
+                                            getCarDetailsById(reparation.carId)
+                                        }}
+                                    </h6>
+                                    <h6>
+                                        Contact -
+                                        {{
+                                            getMechanicContactById(
+                                                reparation.mechanicId
+                                            )
+                                        }}
+                                    </h6>
+                                    <p class="card-text">
+                                        {{ reparation.description }}
+                                    </p>
+                                    <button
+                                        type="button"
+                                        class="card-link btn btn-warning"
+                                        [disabled]="
+                                            reparation.status !== 'New'
+                                                ? true
+                                                : null
+                                        "
+                                        data-bs-toggle="modal"
+                                        (click)="
+                                            selectReparationToBeEdited(
+                                                reparation
+                                            )
+                                        "
+                                        data-bs-target="#editReparationModal">
+                                        Edit
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="card-link btn btn-danger"
+                                        [disabled]="
+                                            reparation.status !== 'New'
+                                                ? true
+                                                : null
+                                        "
+                                        data-bs-toggle="modal"
+                                        (click)="
+                                            selectReparationToBeDeleted(
+                                                reparation
+                                            )
+                                        "
+                                        data-bs-target="#deleteConfirmationModal">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>

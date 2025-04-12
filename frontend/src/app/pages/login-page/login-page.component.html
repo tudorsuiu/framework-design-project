@@ -1,0 +1,66 @@
+<div
+    class="container-fluid vh-100 d-flex align-items-center justify-content-center">
+    <div class="row">
+        <div
+            class="col d-flex flex-column justify-content-center align-items-center">
+            <i
+                class="bi bi-box-arrow-in-right fs-1 text-primary text-center"></i>
+            <span class="fs-2 fw-bold text-center">Welcome!</span>
+            <span class="fs-4 mb-4 text-secondary text-center"
+                >Sign into your account</span
+            >
+            <form #loginForm="ngForm" (ngSubmit)="onLogin()">
+                <div>
+                    <input
+                        type="email"
+                        class="form-control"
+                        id="email"
+                        placeholder="Email"
+                        [(ngModel)]="loggingUserDetails.email"
+                        #email="ngModel"
+                        name="email"
+                        pattern="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"
+                        maxlength="255"
+                        required />
+                </div>
+                <div *ngIf="email.touched" class="text-danger">
+                    <small *ngIf="email.errors?.['required']">
+                        Email is required.
+                    </small>
+                    <small *ngIf="email.errors?.['pattern']">
+                        Email format not valid.
+                    </small>
+                </div>
+                <div class="mb-2"></div>
+                <div>
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="password"
+                        placeholder="Password"
+                        [(ngModel)]="loggingUserDetails.password"
+                        #password="ngModel"
+                        name="password"
+                        required />
+                </div>
+                <div *ngIf="password.touched" class="text-danger">
+                    <small *ngIf="password.errors?.['required']">
+                        Password is required.
+                    </small>
+                </div>
+                <div class="mb-2"></div>
+                <div class="d-grid">
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        [disabled]="!loginForm.valid">
+                        Log In
+                    </button>
+                </div>
+            </form>
+            <a class="text-reset text-decoration-none" routerLink="../register"
+                >New to the app?</a
+            >
+        </div>
+    </div>
+</div>

@@ -1,0 +1,72 @@
+<nav
+    class="navbar navbar-expand-lg bg-primary fixed-top header-height shadow"
+    data-bs-theme="dark">
+    <div class="container">
+        <a
+            class="navbar-brand d-flex align-items-center"
+            routerLink="user-main-page">
+            <i class="bi bi-car-front-fill fs-3"></i
+            ><span class="text-spacing-icon"> SmartService</span></a
+        >
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#headerNavbar"
+            aria-controls="headerNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+            class="collapse navbar-collapse justify-content-between"
+            id="headerNavbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item d-flex justify-content-center">
+                    <a
+                        class="nav-link"
+                        routerLink="/user-main-page"
+                        routerLinkActive="active"
+                        >Home</a
+                    >
+                </li>
+                <li class="nav-item d-flex justify-content-center">
+                    <a
+                        class="nav-link"
+                        routerLink="/user-cars-page"
+                        routerLinkActive="active"
+                        >Cars</a
+                    >
+                </li>
+                <li class="nav-item d-flex justify-content-center">
+                    <a
+                        class="nav-link"
+                        routerLink="/user-bills-page"
+                        routerLinkActive="active"
+                        >Bills</a
+                    >
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item d-flex justify-content-center">
+                    <a
+                        class="nav-link d-flex align-items-center"
+                        routerLink="/user-edit-page"
+                        routerLinkActive="active"
+                        ><i class="bi bi-person-fill fs-3"></i>
+                        <span class="text-spacing-icon">My account</span></a
+                    >
+                </li>
+                <li class="nav-item d-flex justify-content-center">
+                    <a
+                        class="nav-link d-flex align-items-center"
+                        (click)="authenticationService.logout()"
+                        routerLink="/login"
+                        ><i class="bi bi-box-arrow-right fs-3"></i>
+                        <span class="text-spacing-icon">Log out</span></a
+                    >
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

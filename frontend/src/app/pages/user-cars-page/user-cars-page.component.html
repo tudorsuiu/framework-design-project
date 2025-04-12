@@ -1,0 +1,187 @@
+<app-edit-car-modal [car]="carToBeEdited"></app-edit-car-modal>
+<app-delete-confirmation-modal
+    (confirmDelete)="onDeleteCarConfirmed()"></app-delete-confirmation-modal>
+<app-header> </app-header>
+<div
+    class="container-fluid content-height d-flex flex-direction-row justify-content-center align-items-center overflow-hidden"
+    *ngIf="authenticationService.loggedUser$ | async as loggedUser">
+    <div class="row d-flex flex-row justify-content-center">
+        <div class="col-md-6 col-12">
+            <div
+                class="d-flex flex-column justify-content-center align-items-center">
+                <i class="bi bi-plus-square fs-1 text-primary text-center"></i>
+                <span class="fs-2 fw-bold text-center">Add a car</span>
+                <span class="fs-4 mb-4 text-secondary text-center"
+                    >Please fill in all the sections below</span
+                >
+                <form
+                    #createCarForm="ngForm"
+                    (ngSubmit)="onCreateCar(); createCarForm.resetForm()">
+                    <div class="mb-3">
+                        <label for="carBrand" class="form-label"
+                            >🏷️ Car Brand:</label
+                        >
+                        <select
+                            class="form-select"
+                            id="carBrand"
+                            aria-label="Select car brand"
+                            name="carBrand"
+                            [(ngModel)]="carBrandValue"
+                            #carBrand="ngModel"
+                            required>
+                            <option [value]="null" selected>
+                                Select Brand
+                            </option>
+                            <option
+                                *ngFor="let brand of brands"
+                                [value]="brand">
+                                {{ brand }}
+                            </option>
+                        </select>
+                        <div class="text-danger" *ngIf="carBrand.touched">
+                            <small *ngIf="carBrand.errors?.['required']"
+                                >Please select a car model!</small
+                            >
+                        </div>
+                    </div>
+                    <div class="mb-3" *ngIf="carBrandValue">
+                        <label for="carModel" class="form-label"
+                            >🚗 Car Model:</label
+                        >
+                        <select
+                            class="form-select"
+                            id="carModel"
+                            aria-label="Select car model"
+                            name="carModel"
+                            [(ngModel)]="carModelValue"
+                            #carModel="ngModel"
+                            required>
+                            <option [value]="null" selected>
+                                Select Model
+                            </option>
+                            <option
+                                *ngFor="let model of models[carBrandValue]"
+                                [value]="model">
+                                {{ model }}
+                            </option>
+                        </select>
+                        <div class="text-danger" *ngIf="carModel.touched">
+                            <small *ngIf="carModel.errors?.['required']"
+                                >Please select a car model!</small
+                            >
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fabricationYear" class="form-label"
+                            >📅 Fabrication Year:</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="fabricationYear"
+                            name="fabricationYear"
+                            [(ngModel)]="carFabricationYearValue"
+                            #fabricationYear="ngModel"
+                            maxlength="4"
+                            pattern="^(19[0-9]{2}|20[0-1][0-9]|202[0-4])$"
+                            placeholder="Enter fabrication year"
+                            required />
+                        <div
+                            class="text-danger"
+                            *ngIf="fabricationYear.touched">
+                            <small *ngIf="fabricationYear.errors?.['required']"
+                                >Please insert the fabrication year!</small
+                            >
+                            <small *ngIf="fabricationYear.errors?.['pattern']">
+                                Year must be between 1900 and 2024.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="licensePlate" class="form-label"
+                            >🔤 License Plate:</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="licensePlate"
+                            name="licensePlate"
+                            [(ngModel)]="carLicensePlateValue"
+                            #licensePlate="ngModel"
+                            maxlength="7"
+                            placeholder="Enter license plate"
+                            pattern="[A-Z]{1,2}\d{2,3}[A-Z]{3}$"
+                            required />
+                        <div class="text-danger" *ngIf="licensePlate.touched">
+                            <small *ngIf="licensePlate.errors?.['required']"
+                                >Please insert the license plate!</small
+                            >
+                            <small *ngIf="licensePlate.errors?.['pattern']"
+                                >Please enter a valid license plate!</small
+                            >
+                        </div>
+                    </div>
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100"
+                        [disabled]="!createCarForm.valid">
+                        Add
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <div
+                class="d-flex flex-column justify-content-center align-items-center overflow-auto">
+                <i
+                    class="bi bi-car-front-fill fs-1 text-primary text-center"></i>
+                <span class="fs-2 fw-bold text-center">Cars</span>
+                <span class="fs-4 mb-4 text-secondary text-center"
+                    >Navigate your vehicles</span
+                >
+                <div class="card-list card-list-overflow">
+                    <div *ngIf="loggedUser.cars?.length === 0; else carList">
+                        <p class="text-muted">
+                            You have no cars saved in your account!
+                        </p>
+                    </div>
+                    <ng-template #carList>
+                        <div *ngFor="let car of loggedUser.cars">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        {{ car.licensePlate }}
+                                    </h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        {{ car.brand }} {{ car.model }}
+                                    </h6>
+                                    <p class="card-text">
+                                        Fabrication year:
+                                        {{ car.fabricationYear }}
+                                    </p>
+                                    <button
+                                        type="button"
+                                        class="card-link btn btn-warning"
+                                        data-bs-toggle="modal"
+                                        (click)="selectCarToBeEdited(car)"
+                                        data-bs-target="#editCarModal">
+                                        Edit
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="card-link btn btn-danger"
+                                        data-bs-toggle="modal"
+                                        (click)="selectCarToBeDeleted(car)"
+                                        data-bs-target="#deleteConfirmationModal">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>

@@ -1,0 +1,173 @@
+<div
+    #editCarModal
+    class="modal fade"
+    id="editReparationModal"
+    tabindex="-1"
+    aria-labelledby="editReparationModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit car</h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form
+                    #editReparationModalForm="ngForm"
+                    (ngSubmit)="onEditReparation()">
+                    <div class="mb-3">
+                        <label for="carSelect" class="form-label"
+                            >🚗 Select your car</label
+                        >
+                        <select
+                            class="form-select"
+                            id="carSelect"
+                            aria-label="Select your car"
+                            name="carId"
+                            [(ngModel)]="reparation.carId"
+                            #carSelect="ngModel"
+                            required>
+                            <option [value]="null" selected>
+                                Select your car
+                            </option>
+                            <option
+                                *ngFor="let car of loggedUser?.cars"
+                                [value]="car.id">
+                                {{ car.licensePlate }} - {{ car.brand }}
+                                {{ car.model }}
+                            </option>
+                        </select>
+                        <div *ngIf="carSelect.touched" class="text-danger">
+                            <small *ngIf="carSelect.errors?.['required']">
+                                Please select a car.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="mechanicSelect" class="form-label"
+                            >🧑‍🔧 Select a mechanic</label
+                        >
+                        <select
+                            class="form-select"
+                            id="mechanicSelect"
+                            aria-label="Select a mechanic"
+                            name="mechanicId"
+                            [(ngModel)]="reparation.mechanicId"
+                            #mechanicSelect="ngModel"
+                            required>
+                            <option [value]="null" selected>
+                                Select a mechanic
+                            </option>
+                            <option
+                                *ngFor="let mechanic of userService.mechanics"
+                                [value]="mechanic.id">
+                                {{ mechanic.firstName }} {{ mechanic.lastName }}
+                            </option>
+                        </select>
+                        <div *ngIf="mechanicSelect.touched" class="text-danger">
+                            <small *ngIf="mechanicSelect.errors?.['required']">
+                                Please select a mechanic.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reparationTypeSelect" class="form-label"
+                            >🛠️ Select the type of reparation</label
+                        >
+                        <select
+                            class="form-select"
+                            id="reparationTypeSelect"
+                            aria-label="Select the type of reparation"
+                            name="reparationType"
+                            [(ngModel)]="reparation.type"
+                            #reparationTypeSelect="ngModel"
+                            required>
+                            <option [value]="null" selected>
+                                Select the type of reparation
+                            </option>
+                            <option
+                                *ngFor="let reparationType of reparationTypes"
+                                [value]="reparationType">
+                                {{ reparationType }}
+                            </option>
+                        </select>
+                        <div
+                            *ngIf="reparationTypeSelect.touched"
+                            class="text-danger">
+                            <small
+                                *ngIf="reparationTypeSelect.errors?.['required']">
+                                Please select a reparation type.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="appointmentDate" class="form-label"
+                            >📅 Appointment Date:</label
+                        >
+                        <input
+                            type="date"
+                            class="form-control"
+                            id="appointmentDate"
+                            name="appointmentDate"
+                            [(ngModel)]="reparation.date"
+                            [min]="minDate"
+                            #appointmentDate="ngModel"
+                            required />
+                        <div
+                            *ngIf="appointmentDate.touched"
+                            class="text-danger">
+                            <small *ngIf="appointmentDate.errors?.['required']">
+                                Please select a date for your appointment.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reparationDescription" class="form-label"
+                            >Reparation Description:</label
+                        >
+                        <textarea
+                            class="form-control"
+                            id="reparationDescription"
+                            name="reparationDescription"
+                            [(ngModel)]="reparation.description"
+                            #reparationDescription="ngModel"
+                            rows="5"
+                            maxlength="255"
+                            placeholder="Describe the reparation details here..."
+                            required></textarea>
+                        <div
+                            *ngIf="reparationDescription.touched"
+                            class="text-danger">
+                            <small
+                                *ngIf="reparationDescription.errors?.['required']">
+                                Please explain your problem.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            [disabled]="!editReparationModalForm.valid">
+                            Save changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

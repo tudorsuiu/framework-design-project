@@ -1,0 +1,62 @@
+<app-header></app-header>
+<div
+    class="container-fluid content-height d-flex flex-direction-row justify-content-center align-items-center overflow-hidden"
+    *ngIf="authenticationService.loggedUser$ | async as loggedUser">
+    <div class="row d-flex flex-row justify-content-center">
+        <div class="col-md-12 col-12">
+            <div
+                class="d-flex flex-column justify-content-center align-items-center">
+                <i class="bi bi bi-receipt fs-1 text-primary text-center"></i>
+                <span class="fs-2 fw-bold text-center">Bills</span>
+                <span class="fs-4 mb-4 text-secondary text-center"
+                    >Review your bills</span
+                >
+                <div class="card-list card-list-overflow">
+                    <div *ngIf="loggedUser.bills?.length === 0; else billList">
+                        <p class="text-muted">
+                            You don't have any bills generated!
+                        </p>
+                    </div>
+                    <ng-template #billList>
+                        <div *ngFor="let bill of billsSortedByDate()">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Bill</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        <span
+                                            class="badge rounded-pill text-bg-success"
+                                            >Payed</span
+                                        >
+
+                                        {{ bill.date | date : 'mediumDate' }}
+                                    </h6>
+                                    <h6 class="mb-0"></h6>
+                                    <h6>
+                                        {{
+                                            getReparationTypeById(
+                                                bill.reparationId
+                                            )
+                                        }}
+                                    </h6>
+                                    <p class="card-text">
+                                        {{
+                                            getReparationDescriptionById(
+                                                bill.reparationId
+                                            )
+                                        }}
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <h6 class="mb-0">
+                                        Total: {{ bill.total }} RON
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>

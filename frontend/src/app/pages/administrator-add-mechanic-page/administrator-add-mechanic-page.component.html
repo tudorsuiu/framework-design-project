@@ -1,0 +1,150 @@
+<app-administrator-header></app-administrator-header>
+<div
+    class="container-fluid content-height d-flex flex-direction-row justify-content-center align-items-center overflow-hidden"
+    *ngIf="authenticationService.loggedUser$ | async as loggedUser">
+    <div class="row d-flex flex-row justify-content-center">
+        <div class="col-md-12 col-12">
+            <div
+                class="d-flex flex-column justify-content-center align-items-center overflow-auto">
+                <i class="bi bi-person-fill fs-1 text-primary text-center"></i>
+                <span class="fs-2 fw-bold text-center">Add a mechanic</span>
+                <span class="fs-4 mb-4 text-secondary text-center"
+                    >Please fill in all the sections below</span
+                >
+                <form
+                    #addMechanicForm="ngForm"
+                    (ngSubmit)="onAddMechanic(addMechanicForm)">
+                    <div>
+                        <label for="firstName" class="form-label"
+                            >Mechanic first name:</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="firstName"
+                            placeholder="First name"
+                            [(ngModel)]="mechanic.firstName"
+                            #firstName="ngModel"
+                            name="firstName"
+                            pattern="\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+"
+                            maxlength="100"
+                            required />
+                    </div>
+                    <div *ngIf="firstName.touched" class="text-danger">
+                        <small *ngIf="firstName.errors?.['required']">
+                            First name is required.
+                        </small>
+                        <small *ngIf="firstName.errors?.['pattern']">
+                            First name format not valid.
+                        </small>
+                    </div>
+                    <div class="mb-2"></div>
+                    <div>
+                        <label for="lastName" class="form-label"
+                            >Mechanic last name:</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="lastName"
+                            placeholder="Last name"
+                            #lastName="ngModel"
+                            [(ngModel)]="mechanic.lastName"
+                            name="lastName"
+                            pattern="\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+"
+                            maxlength="100"
+                            required />
+                    </div>
+                    <div *ngIf="lastName.touched" class="text-danger">
+                        <small *ngIf="lastName.errors?.['required']">
+                            Last name is required.
+                        </small>
+                        <small *ngIf="lastName.errors?.['pattern']">
+                            Last name format not valid.
+                        </small>
+                    </div>
+                    <div class="mb-2"></div>
+                    <div>
+                        <label for="email" class="form-label"
+                            >Mechanic email:</label
+                        >
+                        <input
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            placeholder="Email"
+                            [(ngModel)]="mechanic.email"
+                            #email="ngModel"
+                            name="email"
+                            pattern="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"
+                            maxlength="255"
+                            required />
+                    </div>
+                    <div *ngIf="email.touched" class="text-danger">
+                        <small *ngIf="email.errors?.['required']">
+                            Email is required.
+                        </small>
+                        <small *ngIf="email.errors?.['pattern']">
+                            Email format not valid.
+                        </small>
+                    </div>
+                    <div class="mb-2"></div>
+                    <div>
+                        <label for="phoneNumber" class="form-label"
+                            >Mechanic phone number:</label
+                        >
+                        <input
+                            type="tel"
+                            class="form-control"
+                            id="phoneNumber"
+                            placeholder="Phone number"
+                            [(ngModel)]="mechanic.phoneNumber"
+                            #phoneNumber="ngModel"
+                            name="phoneNumber"
+                            maxlength="10"
+                            pattern="^07[0-9]{8}$"
+                            required />
+                    </div>
+                    <div *ngIf="phoneNumber.touched" class="text-danger">
+                        <small *ngIf="phoneNumber.errors?.['required']">
+                            Phone number is required.
+                        </small>
+                        <small *ngIf="phoneNumber.errors?.['pattern']">
+                            Phone number not valid.
+                        </small>
+                    </div>
+                    <div class="mb-2"></div>
+                    <div>
+                        <label for="phoneNumber" class="form-label"
+                            >Mechanic password:</label
+                        >
+                        <input
+                            type="password"
+                            class="form-control"
+                            id="password"
+                            placeholder="Password"
+                            [(ngModel)]="mechanic.password"
+                            #password="ngModel"
+                            name="password"
+                            required />
+                    </div>
+                    <div *ngIf="password.touched" class="text-danger">
+                        <small *ngIf="password.errors?.['required']">
+                            Password is required.
+                        </small>
+                    </div>
+                    <div class="mb-2"></div>
+                    <div class="d-grid">
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            [disabled]="!addMechanicForm.valid">
+                            Add mechanic
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <app-footer></app-footer>
+</div>

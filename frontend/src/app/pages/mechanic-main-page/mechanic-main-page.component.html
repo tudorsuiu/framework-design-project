@@ -1,0 +1,151 @@
+<app-mechanic-header></app-mechanic-header>
+<div
+    class="container-fluid content-height d-flex flex-direction-row justify-content-center align-items-center overflow-hidden"
+    *ngIf="authenticationService.loggedUser$ | async as loggedUser">
+    <div class="row d-flex flex-row justify-content-center">
+        <div class="col-md-12 col-12">
+            <div
+                class="d-flex flex-column justify-content-center align-items-center overflow-auto">
+                <i class="bi bi-tools fs-1 text-primary text-center"></i>
+                <span class="fs-2 fw-bold text-center">Reparations</span>
+                <span class="fs-4 mb-4 text-secondary text-center"
+                    >Update reparations status</span
+                >
+                <div class="card-list card-list-overflow">
+                    <div
+                        *ngIf="
+                            loggedUser.reparations?.length === 0;
+                            else reparationList
+                        ">
+                        <p class="text-muted text-center">
+                            No new reparations were scheduled!
+                        </p>
+                    </div>
+                    <ng-template #reparationList>
+                        <div
+                            *ngFor="
+                                let reparation of reparationsSortedByDate()
+                            ">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        {{ reparation.type }}
+                                    </h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        <span
+                                            *ngIf="reparation.status === 'New'"
+                                            class="badge rounded-pill text-bg-primary"
+                                            >New</span
+                                        >
+
+                                        <span
+                                            *ngIf="
+                                                reparation.status ===
+                                                'In Progress'
+                                            "
+                                            class="badge rounded-pill text-bg-warning"
+                                            >In Progress</span
+                                        >
+
+                                        <span
+                                            *ngIf="reparation.status === 'Done'"
+                                            class="badge rounded-pill text-bg-success"
+                                            >Done</span
+                                        >
+
+                                        <span
+                                            *ngIf="
+                                                reparation.status ===
+                                                'Awaiting Payment'
+                                            "
+                                            class="badge rounded-pill text-bg-secondary"
+                                            >Awaiting Payment</span
+                                        >
+
+                                        {{
+                                            reparation.date
+                                                | date : 'mediumDate'
+                                        }}
+                                    </h6>
+                                    <h6 class="mb-0">
+                                        Car -
+                                        {{
+                                            getCarDetailsById(reparation.carId)
+                                        }}
+                                    </h6>
+                                    <h6>
+                                        Contact -
+                                        {{
+                                            getUserContactById(
+                                                reparation.userId
+                                            )
+                                        }}
+                                    </h6>
+                                    <p class="card-text">
+                                        {{ reparation.description }}
+                                    </p>
+                                    <button
+                                        *ngIf="reparation.status == 'New'"
+                                        type="button"
+                                        class="btn btn-warning"
+                                        (click)="
+                                            updateReparationStatus(reparation)
+                                        ">
+                                        In Progress
+                                    </button>
+                                    <button
+                                        *ngIf="
+                                            reparation.status == 'In Progress'
+                                        "
+                                        type="button"
+                                        class="btn btn-secondary"
+                                        (click)="
+                                            updateReparationStatus(reparation)
+                                        ">
+                                        Awaiting Payment
+                                    </button>
+                                    <div
+                                        *ngIf="
+                                            reparation.status ==
+                                            'Awaiting Payment'
+                                        "
+                                        class="input-group">
+                                        <input
+                                            type="number"
+                                            class="form-control"
+                                            [(ngModel)]="
+                                                billTotals[reparation.id]
+                                            "
+                                            placeholder="Total"
+                                            aria-label="Total" />
+                                        <button
+                                            *ngIf="
+                                                reparation.status ==
+                                                'Awaiting Payment'
+                                            "
+                                            type="button"
+                                            class="btn btn-success"
+                                            (click)="
+                                                updateReparationStatus(
+                                                    reparation
+                                                )
+                                            "
+                                            [disabled]="
+                                                billTotals[reparation.id] ===
+                                                    null ||
+                                                billTotals[reparation.id] ===
+                                                    undefined
+                                            ">
+                                            Done
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>
